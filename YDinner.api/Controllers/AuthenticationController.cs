@@ -1,21 +1,44 @@
 using Microsoft.AspNetCore.Mvc;
 using YDinner.Contracts.Authentication;
+using YDinner.Application.Services.Authentication;
 
 namespace YDinner.API.Controllers;
-
 [ApiController]
 [Route("auth")]
 public class AuthenticationController : ControllerBase
 {
-    [Route("register")]
-    public IActionResult Register(RegisterRequest request)
+    private readonly IAuthenticationService _authenticationService;
+
+    public AuthenticationController(IAuthenticationService authenticationService)
     {
-        return Ok(request);
+        _authenticationService = authenticationService;
     }
 
-    [Route("login")]
+    [HttpPost("register")]
+    public IActionResult Register(RegisterRequest request)
+    {
+        var authResult = _authenticationService.Register(request.FirstName, request.LastName, request.Email, request.Password);
+        var response = new AuthenticationResponse(
+            authResult.Id,
+            authResult.FirstName,
+            authResult.LastName,
+            authResult.Email,
+            authResult.Token
+        );
+        return Ok(response);
+    }
+
+    [HttpPost("login")]
     public IActionResult Login(LoginRequest request)
     {
-        return Ok(request);
+        var authResult = _authenticationService.Login(request.Email, request.Password);
+        var response = new AuthenticationResponse(
+            authResult.Id,
+            authResult.FirstName,
+            authResult.LastName,
+            authResult.Email,
+            authResult.Token
+        );
+        return Ok(response);
     }
 }
