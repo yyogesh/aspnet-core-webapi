@@ -1,4 +1,5 @@
-using YDinner.Application.Services.Authentication;
+using YDinner.Application;
+using YDinner.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,7 +9,9 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+
+builder.Services.AddApplication().AddInfrastructure();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
